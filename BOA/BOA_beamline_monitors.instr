@@ -1,0 +1,438 @@
+/*  DOUBLE SELENE AT BOA  
+
+The BOA instrument is completely described to our best knowledge at 27th January 2012.
+
+The only free beamline parameter are the mean-wavelength of the source and the wavelength bandwidth. The rest of
+beamline until the exit of the linear focusing guide is fixed. 
+The only possibility to influence the beam properties is the so called shutter slit. In real  this is a Li mask in front 
+of the linear focusing guide, which can be moved in and out. If it is inside the beam path it mask the  entrance of the
+linear focusing guide in such a way, that the focusing properties are more or less neglected. This can be necessary for 
+experiments which required lower divergences of the beam.
+
+*/
+
+
+
+
+DEFINE INSTRUMENT BOA_RNR51(flagin=0.0 , trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04) 
+    
+DECLARE 
+%{ 
+
+
+
+%} 
+ 
+INITIALIZE 
+%{ 
+
+
+%} 
+ 
+TRACE 
+ 
+ 
+COMPONENT toolbar = Progress_bar( 
+    percent = 10.0) 
+  AT (0, 0, 0) RELATIVE ABSOLUTE 
+ 
+ 
+COMPONENT a1 = Arm() 
+  AT (0,0,0) ABSOLUTE 
+
+/* Source discription for the BOA beamline, SINQ sector 10 surface of the cold source */
+
+COMPONENT csource = Source_gen4( 
+   w = 0.104, h=0.15, xw = 0.08, yh = 0.15,  
+   dist = 1.4,//Lambda0 = lambda_source, dLambda = dlambda_source, 
+    Lmin = 1, Lmax = 9,
+    T1=103.972, I1=(4.035e12/4/PI),  
+    T2=25.56,I2=(2.503e12/4/PI), 
+    T3=298.411,I3=(1.399e13/4/PI),  
+    HEtailA=1.061e12/4/PI,  
+    HEtailL0=-0.453) 
+AT (0,0,0) RELATIVE a1  ROTATED (0,0,0) RELATIVE a1  
+
+/* Slits to simulated the shape of the exit window of the cold source*/
+
+COMPONENT radius1_plugin = Slit(
+    radius=0.132
+    )
+  AT (-0.0724, 0, 0.001) RELATIVE csource
+
+COMPONENT radius2_plugin = Slit(
+    radius=0.16 )
+  AT (0.0864, 0, 0.002) RELATIVE csource
+
+/* monitors to check the source */
+ 
+COMPONENT source_spectra_check = L_monitor( 
+    nL = 50, filename = "source_check", xwidth = 1, 
+    yheight = 1, Lmin = 0, Lmax = 10) 
+  AT (0, 0, 0.01) RELATIVE csource 
+ 
+COMPONENT PSD_behind_csource = PSD_monitor( 
+    nx = 200, ny = 200, filename = "PSD_csource.dat", 
+    xwidth = 0.20, yheight = 0.2) 
+  AT (0, 0, 0.02) RELATIVE csource 
+ 
+COMPONENT source_divergence_check = Divergence_monitor( 
+    nh = 100, nh = 100, filename = "divsource.dat", xmin = -0.04, 
+    xmax = 0.04, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
+    maxdiv_v = 5) 
+  AT (0, 0, 1.0) RELATIVE csource 
+ 
+
+
+/* the following parts discribe the beamline untill the first guide: exit window - cs-noise ; zapfen-unit */ 
+ 
+
+COMPONENT exit_cs = Slit(
+    radius = 0.114)
+  AT (0.07005, 0, 1.0975) RELATIVE csource
+
+
+ 
+COMPONENT zapfen_s = Slit( 
+    xmin=-0.04, xmax=0.04, ymin=-0.075, ymax=0.075 
+    ) 
+  AT (0, 0, 1.13216) RELATIVE csource 
+ 
+COMPONENT zapfen_e = Slit( 
+    xmin=-0.04, xmax=0.04, ymin=-0.075, ymax=0.075 
+    ) 
+  AT (0, 0, 2.0483) RELATIVE csource
+ 
+COMPONENT spectra_behind_zapfen_unit = L_monitor( 
+    nL = 200, filename = "L_zapfen.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, 2.0484) RELATIVE csource 
+ 
+ 
+COMPONENT PSD_behind_zapfen_unit = PSD_monitor( 
+    nx = 100, ny = 100, filename = "PSD_zapfen.dat", 
+    xwidth = 0.10, yheight = 0.17) 
+  AT (0, 0, 2.0485) RELATIVE csource 
+ 
+COMPONENT divergence_behind_zapfen_unit = Divergence_monitor( 
+    nh = 100, nh = 100, filename = "divzapfen.dat", xmin = -0.04, 
+    xmax = 0.04, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
+    maxdiv_v = 5) 
+  AT (0, 0, 2.0486) RELATIVE csource 
+ 
+ 
+ 
+/* RNR51 Internal Guide at BOA (straight , rectangular)  + monitors */ 
+ 
+COMPONENT a2a = Arm() 
+  AT (0.0,0.0, 2.1016) RELATIVE a1 
+
+ 
+COMPONENT internal_guide = Guide( 
+    w1 = 0.08, h1 = 0.15, w2 = 0.08, h2 = 0.15, 
+    l = 2.715, R0 = 0.99, Qc = 0.0219, alpha = 6.07, m = 3.3, 
+    W = 0.003) 
+  AT (0, 0.0, 0) RELATIVE a2a 
+
+
+COMPONENT divLambdaY_exit_internal_guide = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaY_exit_internal_guide",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 0, Lmax = 10)
+  AT (0, 0, 2.7151) RELATIVE a2a 
+  ROTATED (0,0,90)RELATIVE a2a
+
+
+ 
+COMPONENT PSD_behind_guide = PSD_monitor( 
+    nx = 100, ny = 100, filename = "PSD_behind_guide.dat", 
+    xwidth = 0.10, yheight = 0.17) 
+  AT (0, 0, 2.7152) RELATIVE a2a 
+ 
+/* RNR51 Main-Shutter at BOA   */ 
+ 
+COMPONENT Main_Shutter_entrance = Slit( 
+    xmin=-0.04, xmax=0.04, ymin=-0.075, ymax=0.075 
+    ) 
+  AT (0, 0, 2.7511) RELATIVE a2a 
+
+COMPONENT Main_Shutter_exit = Slit( 
+    xmin=-0.04, xmax=0.04, ymin=-0.075, ymax=0.075 
+    ) 
+  AT (0, 0, 2.7511+0.3) RELATIVE a2a 
+
+ 
+/*the 50 mm space between shutter and bender is considered here*/ 
+ 
+COMPONENT a2 = Arm() 
+  AT (0,0, 3.0512) RELATIVE a2a 
+  ROTATED (0,0,0) RELATIVE a2a
+
+/* Bender unit with monitors , bends the cold spectrum at of the primary beam, it is divided in 2 parts due to different suppermirror properties inside the bender*/
+
+COMPONENT spectra_entrance_bender = L_monitor( 
+    nL = 200, filename = "spectra_entrance_bender.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, 0) RELATIVE a2
+
+COMPONENT Bender_1 = Bender( 
+    w = 0.08, h = 0.13, r = 50.0, k = 28, d = 0.0004, R0a = 0.99, 
+    Qca = 0.021, alphaa = 6.07, ma = 3.3, Wa = 0.003, R0i = 0.99, 
+    Qci = 0.021, alphai = 6.07, mi = 3.3, Wi = 0.003, R0s = 0.99, 
+    Qcs = 0.021, alphas = 6.07, ms = 0, Ws = 0.003, l = 0.3998) 
+  AT (0, 0, 0) RELATIVE a2 
+  ROTATED ( 0, 0,0 )RELATIVE a2
+
+ 
+COMPONENT PSD_bender_1 = PSD_monitor( 
+    nx = 500, ny = 1, filename = "PSD_bender_1.dat", 
+    xwidth = 0.1, yheight = 0.17) 
+  AT (0, 0, 0.3999) RELATIVE  a2 
+
+
+COMPONENT Bender_2to4 = Bender( 
+    w = 0.08, h = 0.13, r = 50.0, k = 28, d = 0.0004, R0a = 0.99, 
+    Qca = 0.021, alphaa = 6.07, ma = 2, Wa = 0.003, R0i = 0.99, 
+    Qci = 0.021, alphai = 6.07, mi = 2, Wi = 0.003, R0s = 0.99, 
+    Qcs = 0.021, alphas = 6.07, ms = 0, Ws = 0.003, l = 1.2) 
+  AT (0, 0, 0.4) RELATIVE a2 
+  ROTATED ( 0, 0, 0)RELATIVE a2
+
+
+COMPONENT PSD_exit_bender = PSD_monitor( 
+    nx = 1000, ny = 1000, filename = "PSD_exit_bender.dat", 
+    xwidth = 0.1, yheight = 0.17) 
+  AT (0, 0, 1.601) RELATIVE  a2
+ 
+COMPONENT spectra_exit_bender = L_monitor( 
+    nL = 200, filename = "spectra_exit_bender.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, 1.611) RELATIVE a2
+  
+
+COMPONENT divergence_exit_bender = Divergence_monitor( 
+    nh = 400, nh = 400, filename = "divergence_exit_bender.dat", xmin = -0.04, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
+    maxdiv_v = 4) 
+  AT (0, 0, 1.6111) RELATIVE a2 
+ 
+
+COMPONENT divLambdaX_exit_bender = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaX_exit_bender",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 1, Lmin = 0, Lmax = 10)
+  AT (0, 0, 1.6112) RELATIVE a2
+
+COMPONENT divLambdaY_exit_bender = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaY_exit_bender",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 0, Lmax = 10)
+  AT (0, 0, 1.6113) RELATIVE a2 
+  ROTATED (0,0,90)RELATIVE a2
+/*----------------------------------------------------------------------------------------------------------------------*/ 
+ 
+/* after the bender in front of the experimental shutter we have the so called shutter slit:
+    - it can be used to shadow the focusing guide after experimental  shutter
+    - if flagin = 0 it is out of the beam: means higher flux and bigger divergence after the focusing guide
+    - if flagin = 1 it is inside the beam: means lower flux (factor 0.5) and smaller divergence*/
+
+COMPONENT trompete_entrance_slit_big = Slit( 
+    xmin=-0.0255, xmax=0.0255, ymin=-0.075, ymax=0.075 
+    ) 
+  WHEN(flagin==0)
+  AT (-0.0145, 0.0, 1.6+0.02962) RELATIVE a2  
+
+COMPONENT trompete_entrance_slit_small = Slit( 
+    xmin=-0.0125, xmax=0.0125, ymin=-0.06, ymax=0.06 
+    ) 
+  WHEN(flagin==1)
+  AT (-0.0145, 0.0, 1.6+0.02962) RELATIVE a2 
+
+
+COMPONENT lamba_check = Monitor_nD(
+    options = "auto lambda per cm2", filename = "lambda_check",
+    xwidth = 0.051, yheight = 0.15, bins = 600)
+  AT (0, 0, 0.0001) RELATIVE PREVIOUS
+
+COMPONENT hdiv_check = Monitor_nD(
+    options = "x hdiv, all auto", filename = "hdiv_check",
+    xwidth = 0.051, yheight = 0.15, bins = 600)
+  AT (0, 0, 0.000) RELATIVE PREVIOUS
+
+COMPONENT vdiv_check = Monitor_nD(
+    options = "y vdiv, all auto", filename = "vdiv_check",
+    xwidth = 0.051, yheight = 0.15, bins = 600)
+  AT (0, 0, 0.000) RELATIVE PREVIOUS
+
+
+/*----------------------------------------------------------------------------------------------------------------------*/ 
+
+/* the horizontal focusing guide at BOA with monitors: it has  a linear shape, and different m-values at the sides 
+   it is shifted to the beam center of  the bender, cause we want to come out of the direct view of the source: 
+   in reality the bender did not abbsorb the faster neutrons, therefore it is neassesary to shift,
+   the whole beamline after the focusing guide is centered to the center of the exit of this guide */
+
+COMPONENT trompete_1 = Guide_four_side(
+    w1l = 0.02545454, w2l = 0.02363636, w1r = 0.02545454, w2r = 0.02363636,
+    h1u = 0.075, h2u = 0.075, h1d = 0.075, h2d = 0.075, 
+    l = 0.5,
+    mxr = 3,mxl = 3, myu = 2, myd = 2, 
+    mxrOW = 0, mxlOW = 0, myuOW = 0,mydOW = 0, 
+    rwallthick = 0.005, lwallthick = 0.005,
+    uwallthick = 0.005, dwallthick = 0.005)
+  AT (-0.0145, 0, 1.2+ 0.21532) RELATIVE Bender_2to4
+
+
+COMPONENT trompete_2 = Guide_four_side(
+    w1l = 0.023632727, w2l = 0.021818181, w1r =  0.023632727, w2r = 0.021818181, h1u = 0.075,
+    h2u = 0.075, h1d = 0.075, h2d = 0.075, l = 0.499, mxr = 3,
+    mxl = 3, myu = 2, myd = 2, mxrOW = 0, mxlOW = 0, myuOW = 0,
+    mydOW = 0, rwallthick = 0.005, lwallthick = 0.005,
+    uwallthick = 0.005, dwallthick = 0.005)
+  AT (-0.0145, 0, 1.2+0.21532+0.501) RELATIVE Bender_2to4
+
+COMPONENT trompete_3 = Guide_four_side(
+    w1l = 0.021814545, w2l = 0.02, w1r =  0.021814545, w2r = 0.02, h1u = 0.075,
+    h2u = 0.075, h1d = 0.075, h2d = 0.075, l = 0.499, mxr = 3,
+    mxl = 3, myu = 2, myd = 2, mxrOW = 0, mxlOW = 0, myuOW = 0,
+    mydOW = 0, rwallthick = 0.005, lwallthick = 0.005,
+    uwallthick = 0.005, dwallthick = 0.005)
+  AT (-0.0145, 0, 1.2+0.21532+1.001) RELATIVE Bender_2to4
+
+
+
+COMPONENT divergence_before_trompete_exit_slit = Divergence_monitor( 
+    nh = 400, nh = 400, filename = "divergence_before_trompete_exit_slit.dat", xmin = -0.1, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
+    maxdiv_v = 4) 
+  AT (0, 0, 0.5) RELATIVE  trompete_3
+ 
+
+COMPONENT divLambdaX_before_trompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaX_before_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 5, Lmin = 3, Lmax = 13)
+  AT (0, 0, 0.501) RELATIVE  trompete_3
+
+COMPONENT divLambdaY_beforetrompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaY__before_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
+  AT (0, 0, 0.502) RELATIVE  trompete_3
+  ROTATED (0,0,90)RELATIVE a2
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+
+/* after the focusing guide, we have the possibilty of setting a first slit (not motorized)
+   available heights are : 120, 40 , 20 
+   available widths are : 40, 20 , 5, 3, 1
+*/
+
+COMPONENT trompete_exit_slit = Slit(
+    xwidth= trompete_exit_slit_width , yheight=trompete_exit_slit_height)
+  AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3
+
+
+
+COMPONENT b1= Arm()
+  AT (0, 0, 0.00001) RELATIVE trompete_exit_slit
+
+
+
+
+COMPONENT divergence_trompete_exit_slit = Divergence_monitor( 
+    nh = 400, nh = 400, filename = "divergence_trompete_exit_slit.dat", xmin = -0.1, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 2, 
+    maxdiv_v = 2) 
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+ 
+
+
+COMPONENT divLambdaX_trompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaX_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
+  AT (0, 0, 0.011) RELATIVE trompete_exit_slit
+
+COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaY_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
+  AT (0, 0, 0.012) RELATIVE trompete_exit_slit 
+  ROTATED (0,0,90)RELATIVE a2
+
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+COMPONENT spectra_exit_bender = L_monitor( 
+    nL = 200, filename = "spectra_bunker.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, 1.611) RELATIVE b1
+
+
+END 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

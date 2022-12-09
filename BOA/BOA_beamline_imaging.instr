@@ -14,7 +14,7 @@ experiments which required lower divergences of the beam.
 
 
 
-DEFINE INSTRUMENT BOA_RNR51(lambda_source=5.0,dlambda_source=5.0, flagin=0.0 , trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04) 
+DEFINE INSTRUMENT BOA_RNR51(detector_dist= 5.0, andorIkonL_FoV= 130e-3, flagin= 0.0, pinhole_slit_width= 0.04, pinhole_slit_height= 0.04) 
     
 DECLARE 
 %{ 
@@ -44,7 +44,8 @@ COMPONENT a1 = Arm()
 
 COMPONENT csource = Source_gen4( 
    w = 0.104, h=0.15, xw = 0.08, yh = 0.15,  
-   dist = 1.4,Lambda0 = lambda_source, dLambda = dlambda_source, 
+   dist = 1.4,//Lambda0 = lambda_source, dLambda = dlambda_source, 
+    Lmin = 0, Lmax = 20,
     T1=103.972, I1=(4.035e12/4/PI),  
     T2=25.56,I2=(2.503e12/4/PI), 
     T3=298.411,I3=(1.399e13/4/PI),  
@@ -63,7 +64,7 @@ COMPONENT radius2_plugin = Slit(
     radius=0.16 )
   AT (0.0864, 0, 0.002) RELATIVE csource
 
-/* monitors to check the source */
+/* monitors to check the source 
  
 COMPONENT source_spectra_check = L_monitor( 
     nL = 50, filename = "source_check", xwidth = 1, 
@@ -80,7 +81,7 @@ COMPONENT source_divergence_check = Divergence_monitor(
     xmax = 0.04, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
     maxdiv_v = 5) 
   AT (0, 0, 1.0) RELATIVE csource 
- 
+ */
 
 
 /* the following parts discribe the beamline untill the first guide: exit window - cs-noise ; zapfen-unit */ 
@@ -102,12 +103,13 @@ COMPONENT zapfen_e = Slit(
     ) 
   AT (0, 0, 2.0483) RELATIVE csource
  
+ /* monitors to check the first guide
+
 COMPONENT spectra_behind_zapfen_unit = L_monitor( 
     nL = 200, filename = "L_zapfen.dat", xwidth=0.1, 
     yheight = 0.17, Lmin = 0, Lmax = 10.0) 
   AT (0, 0, 2.0484) RELATIVE csource 
- 
- 
+
 COMPONENT PSD_behind_zapfen_unit = PSD_monitor( 
     nx = 100, ny = 100, filename = "PSD_zapfen.dat", 
     xwidth = 0.10, yheight = 0.17) 
@@ -118,8 +120,7 @@ COMPONENT divergence_behind_zapfen_unit = Divergence_monitor(
     xmax = 0.04, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
     maxdiv_v = 5) 
   AT (0, 0, 2.0486) RELATIVE csource 
- 
- 
+*/
  
 /* RNR51 Internal Guide at BOA (straight , rectangular)  + monitors */ 
  
@@ -133,7 +134,7 @@ COMPONENT internal_guide = Guide(
     W = 0.003) 
   AT (0, 0.0, 0) RELATIVE a2a 
 
-
+ /* monitors to check the internal guid
 COMPONENT divLambdaY_exit_internal_guide = DivLambda_monitor(
     nL = 200, nh = 200, filename = "divLambdaY_exit_internal_guide",
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 0, Lmax = 10)
@@ -146,7 +147,8 @@ COMPONENT PSD_behind_guide = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_behind_guide.dat", 
     xwidth = 0.10, yheight = 0.17) 
   AT (0, 0, 2.7152) RELATIVE a2a 
- 
+*/ 
+
 /* RNR51 Main-Shutter at BOA   */ 
  
 COMPONENT Main_Shutter_entrance = Slit( 
@@ -168,10 +170,12 @@ COMPONENT a2 = Arm()
 
 /* Bender unit with monitors , bends the cold spectrum at of the primary beam, it is divided in 2 parts due to different suppermirror properties inside the bender*/
 
+ /* monitors to check the wavelength at bender entrance
 COMPONENT spectra_entrance_bender = L_monitor( 
     nL = 200, filename = "spectra_entrance_bender.dat", xwidth=0.1, 
     yheight = 0.17, Lmin = 0, Lmax = 10.0) 
   AT (0, 0, 0) RELATIVE a2
+*/
 
 COMPONENT Bender_1 = Bender( 
     w = 0.08, h = 0.13, r = 50.0, k = 28, d = 0.0004, R0a = 0.99, 
@@ -181,11 +185,12 @@ COMPONENT Bender_1 = Bender(
   AT (0, 0, 0) RELATIVE a2 
   ROTATED ( 0, 0,0 )RELATIVE a2
 
- 
+  /* monitors to check the bender 1
 COMPONENT PSD_bender_1 = PSD_monitor( 
     nx = 500, ny = 1, filename = "PSD_bender_1.dat", 
     xwidth = 0.1, yheight = 0.17) 
   AT (0, 0, 0.3999) RELATIVE  a2 
+*/
 
 
 COMPONENT Bender_2to4 = Bender( 
@@ -196,7 +201,7 @@ COMPONENT Bender_2to4 = Bender(
   AT (0, 0, 0.4) RELATIVE a2 
   ROTATED ( 0, 0, 0)RELATIVE a2
 
-
+ /* monitors to check the bender
 COMPONENT PSD_exit_bender = PSD_monitor( 
     nx = 1000, ny = 1000, filename = "PSD_exit_bender.dat", 
     xwidth = 0.1, yheight = 0.17) 
@@ -225,6 +230,8 @@ COMPONENT divLambdaY_exit_bender = DivLambda_monitor(
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 0, Lmax = 10)
   AT (0, 0, 1.6113) RELATIVE a2 
   ROTATED (0,0,90)RELATIVE a2
+*/
+
 /*----------------------------------------------------------------------------------------------------------------------*/ 
  
 /* after the bender in front of the experimental shutter we have the so called shutter slit:
@@ -244,6 +251,7 @@ COMPONENT trompete_entrance_slit_small = Slit(
   WHEN(flagin==1)
   AT (-0.0145, 0.0, 1.6+0.02962) RELATIVE a2 
 
+ /* monitors to check the "shutter slit"
 
 COMPONENT lamba_check = Monitor_nD(
     options = "auto lambda per cm2", filename = "lambda_check",
@@ -259,7 +267,7 @@ COMPONENT vdiv_check = Monitor_nD(
     options = "y vdiv, all auto", filename = "vdiv_check",
     xwidth = 0.051, yheight = 0.15, bins = 600)
   AT (0, 0, 0.000) RELATIVE PREVIOUS
-
+*/
 
 /*----------------------------------------------------------------------------------------------------------------------*/ 
 
@@ -296,7 +304,7 @@ COMPONENT trompete_3 = Guide_four_side(
   AT (-0.0145, 0, 1.2+0.21532+1.001) RELATIVE Bender_2to4
 
 
-
+ /* monitors to check the horizontal focusing guide
 COMPONENT divergence_before_trompete_exit_slit = Divergence_monitor( 
     nh = 400, nh = 400, filename = "divergence_before_trompete_exit_slit.dat", xmin = -0.1, 
     xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 5, 
@@ -314,6 +322,7 @@ COMPONENT divLambdaY_beforetrompete_exit_slit = DivLambda_monitor(
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
   AT (0, 0, 0.502) RELATIVE  trompete_3
   ROTATED (0,0,90)RELATIVE a2
+*/
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
@@ -322,39 +331,48 @@ COMPONENT divLambdaY_beforetrompete_exit_slit = DivLambda_monitor(
    available widths are : 40, 20 , 5, 3, 1
 */
 
-COMPONENT trompete_exit_slit = Slit(
-    xwidth= trompete_exit_slit_width , yheight=trompete_exit_slit_height)
+COMPONENT pinhole_slit = Slit(
+    xwidth= pinhole_slit_width , yheight=pinhole_slit_height)
   AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3
 
 
 
 COMPONENT b1= Arm()
-  AT (0, 0, 0.00001) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.00001) RELATIVE pinhole_slit
 
 
-
-
+ /* monitors to check the first first slit
 COMPONENT divergence_trompete_exit_slit = Divergence_monitor( 
     nh = 400, nh = 400, filename = "divergence_trompete_exit_slit.dat", xmin = -0.1, 
     xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 2, 
     maxdiv_v = 2) 
-  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.01) RELATIVE pinhole_slit
  
 
 
 COMPONENT divLambdaX_trompete_exit_slit = DivLambda_monitor(
     nL = 200, nh = 200, filename = "divLambdaX_trompete_exit_slit",
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
-  AT (0, 0, 0.011) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.011) RELATIVE pinhole_slit
 
 COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
     nL = 200, nh = 200, filename = "divLambdaY_trompete_exit_slit",
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
-  AT (0, 0, 0.012) RELATIVE trompete_exit_slit 
+  AT (0, 0, 0.012) RELATIVE pinhole_slit 
   ROTATED (0,0,90)RELATIVE a2
-
+*/
 /*--------------------------------------------------------------------------------------------------------------------*/
+// Components downstream the first pinhole (b1).
 
+COMPONENT SpectrumAtDetector = L_monitor( 
+    nL = 200, filename = "SpectrumAtDetector.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, detector_dist) RELATIVE b1
+  
+COMPONENT AndorIkonL = PSD_monitor( 
+    nx = 512, ny = 512, filename = "AndorIkonL.dat", 
+    xwidth = andorIkonL_FoV, yheight = andorIkonL_FoV) 
+  AT (0, 0, detector_dist) RELATIVE b1 
 
 END 
  

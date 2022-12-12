@@ -331,23 +331,6 @@ COMPONENT divLambdaY_beforetrompete_exit_slit = DivLambda_monitor(
    available widths are : 40, 20 , 5, 3, 1
 */
 
-COMPONENT brilliance_monitor = Brilliance_monitor(
-    nlam=1000, lambda_0=0, lambda_1=20, 
-    restore_neutron=1, 
-    Freq=1, xwidth=pinhole_slit_width, yheight=pinhole_slit_height, 
-    source_dist=1.2+0.21532+1.001+0.4+3.0512+2.1016+0.499+0.1605, 
-    filename="pinhole_Brilliance.dat")
-AT (0, 0, 0.499+0.1605-1e-3) RELATIVE trompete_3
-
-COMPONENT divergence_monitor = Divergence_monitor(
-    nh=100, 
-    nv=100, 
-    filename="pinhole_Divergence.dat", 
-    xwidth=pinhole_slit_width, 
-    yheight=pinhole_slit_height, 
-    restore_neutron=1)
-AT (0, 0, 0.499+0.1605-1e-3) RELATIVE PREVIOUS
-
 COMPONENT pinhole_slit = Slit(
     xwidth= pinhole_slit_width , yheight=pinhole_slit_height)
   AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3
@@ -381,11 +364,9 @@ COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
 /*--------------------------------------------------------------------------------------------------------------------*/
 // Components downstream the first pinhole (b1).
 
-
-
 COMPONENT SpectrumAtDetector = L_monitor( 
-    nL = 200, filename = "SpectrumAtDetector.dat", xwidth=andorIkonL_FoV, 
-    yheight = andorIkonL_FoV, Lmin = 0, Lmax = 20.0) 
+    nL = 200, filename = "SpectrumAtDetector.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
   AT (0, 0, detector_dist) RELATIVE b1
   
 COMPONENT AndorIkonL = PSD_monitor( 

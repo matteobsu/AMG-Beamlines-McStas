@@ -14,18 +14,22 @@ experiments which required lower divergences of the beam.
 
 
 
-DEFINE INSTRUMENT BOA_RNR51(string MCPLdir=".", int repeats=1, E_smear=0.01, pos_smear=0.001, dir_smear=0.001) 
+DEFINE INSTRUMENT BOA_RNR51(string BASEdir=".", Lmin=1, Lmax=9, trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04) 
     
 DECLARE 
 %{ 
-  char mcplfilename[128];
+  char spectrumfilename[128];
+  char divxfilename[128];
+  char divyfilename[128];
 %} 
  
 INITIALIZE 
 %{ 
-  sprintf(mcplfilename,"%s/BOA_trompete_exit.mcpl.gz",MCPLdir);
-
-  printf("MCPL input: %s\n",mcplfilename);
+  sprintf(spectrumfilename,"%s/Mean_Brilliance.dat",BASEdir);
+  sprintf(divxfilename,"%s/divX_trompete_exit_slit.dat",BASEdir);
+  sprintf(divyfilename,"%s/divY_trompete_exit_slit.dat",BASEdir);
+  
+  printf("Source_gen input: %s, %s, %s\n",spectrumfilename,divxfilename,divyfilename);
   
 %} 
  
@@ -34,12 +38,23 @@ TRACE
  
 COMPONENT toolbar = Progress_bar( 
     percent = 10.0) 
-  AT (0, 0, 0) RELATIVE ABSOLUTE 
- 
- 
+  AT (0, 0, 0) RELATIVE ABSOLUTE
+  
 COMPONENT a1 = Arm() 
   AT (0,0,0) ABSOLUTE 
- 
+
+COMPONENT Synthetic_source = Source_gen(
+  flux_file = spectrumfilename,
+  flux_file_perAA = 1,
+  Lmin = Lmin,
+  Lmax = Lmax,
+  xwidth=0.104,
+  yheight=0.15,
+  focus_xw=trompete_exit_slit_width,
+  focus_yh=trompete_exit_slit_height,
+  dist=8.62862) 
+ AT (0, 0, 0) RELATIVE a1
+  
 COMPONENT a2a = Arm() 
   AT (0.0,0.0, 2.1016) RELATIVE a1 
  
@@ -53,7 +68,7 @@ COMPONENT Bender_2to4_pos = Arm()
 
 
 COMPONENT trompete_3_pos = Arm()
-  AT (-0.0145, 0, 1.2+0.21532+1.001) RELATIVE Bender_2to4_pos
+  AT (0, 0, 1.2+0.21532+1.001) RELATIVE Bender_2to4_pos
 
 
 /*-------------------------------------------------------------------------------------------------------------------*/
@@ -63,19 +78,23 @@ COMPONENT trompete_3_pos = Arm()
    available widths are : 40, 20 , 5, 3, 1
 */
 
-COMPONENT trompete_exit_slit = Arm()
+COMPONENT trompete_exit_slit = Slit(
+    xwidth= trompete_exit_slit_width , yheight=trompete_exit_slit_height)
   AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3_pos
-
-COMPONENT MCPL_input = MCPL_input(filename=mcplfilename, repeat_count=repeats, E_smear=E_smear, dir_smear=dir_smear, pos_smear=pos_smear)
-  AT (0, 0, 0) ABSOLUTE
 
 COMPONENT b1= Arm()
   AT (0, 0, 0.00001) RELATIVE trompete_exit_slit
 
+COMPONENT Brill = Brilliance_monitor(
+    nlam = 1001, nt = 1001, filename = "Brilliance", source_dist= 0.00001 + 0.499+0.1605 + 1.2+0.21532+1.001 + 0.4 + 3.0512 + 2.1016, t_0 = 0,
+    t_1 =1e6, lambda_0 = Lmin, lambda_1 = Lmax,
+    Freq =14, toflambda=1 ,tofcuts=0, xwidth=trompete_exit_slit_width, yheight=trompete_exit_slit_height, srcarea=(0.104*0.15*100*100), restore_neutron=1)
+  AT (0, 0, 0) RELATIVE b1
+  
 COMPONENT PSD_exit_slit = PSD_monitor( 
     nx = 400, ny = 400, filename = "PSD_exit_slit.dat", xmin = -0.1, 
     xmax = 0.1, ymin = -0.075, ymax = 0.075, restore_neutron=1) 
-  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit 
 
 COMPONENT divergence_trompete_exit_slit = Divergence_monitor( 
     nh = 400, nh = 400, filename = "divergence_trompete_exit_slit.dat", xmin = -0.1, 

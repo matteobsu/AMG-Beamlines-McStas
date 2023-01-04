@@ -1,0 +1,240 @@
+McStas simulation description file for BOA_RNR51.
+Date:    Wed Jan  4 16:07:42 2023
+Program: 
+
+begin instrument: BOA_RNR51
+  File: BOA_Source_gen/0/mccode
+  Source: BOA_beamline_monitors_Synthetic.instr
+  Parameters:  BASEdir(string) Lmin(double) Lmax(double) trompete_exit_slit_width(double) trompete_exit_slit_height(double)
+  Trace_enabled: yes
+  Default_main: yes
+  Embedded_runtime: yes
+end instrument
+
+begin simulation: BOA_Source_gen/0
+  Format: McCode with text headers
+  URL: http://www.mccode.org
+  Creator: 
+  Instrument: BOA_beamline_monitors_Synthetic.instr
+  Ncount: 100000000
+  Trace: no
+  Gravitation: no
+  Seed: 1672844862956178
+  Directory: BOA_Source_gen/0
+  Nodes: 8
+  Param: BASEdir=BOA_1-9AA_1e8/0/
+  Param: Lmin=1
+  Param: Lmax=9
+  Param: trompete_exit_slit_width=0.04
+  Param: trompete_exit_slit_height=0.04
+end simulation
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_1d(1001)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: Brill
+  position: 0 0 8.62863
+  title: Mean brilliance
+  Ncount: 200000000
+  filename: Mean_Brilliance.dat
+  statistics: X0=4.39931; dX=1.79545;
+  signal: Min=9.41261e+09; Max=2.475e+11; Mean=1.2639e+11;
+  values: 1.26516e+14 1.43275e+10 9.99997e+07
+  xvar: Mean
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Mean Brilliance
+  xlimits: 1 9
+  variables: Mean I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_1d(1001)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: Brill
+  position: 0 0 8.62863
+  title: Peak brilliance
+  Ncount: 200000000
+  filename: Peak_Brilliance.dat
+  statistics: X0=4.39885; dX=1.79534;
+  signal: Min=6.73001e+11; Max=1.76962e+13; Mean=8.99831e+12;
+  values: 9.00731e+15 9.91558e+07 9.95739e+07
+  xvar: Peak
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Peak Brilliance
+  xlimits: 1 9
+  variables: Peak I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_2d(1001, 1001)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: Brill
+  position: 0 0 8.62863
+  title: TOF-wavelength brilliance
+  Ncount: 200000000
+  filename: Brilliance.dat
+  statistics: X0=9596.69; dX=3927.74; Y0=4.39931; dY=1.79545;
+  signal: Min=0; Max=1.76962e+13; Mean=9.02785e+09;
+  values: 9.04592e+15 9.95436e+07 9.99997e+07
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 0 1e+06 1 9
+  variables: I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_2d(400, 400)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: PSD_exit_slit
+  position: 0 0 8.63862
+  title: PSD monitor
+  Ncount: 200000000
+  filename: PSD_exit_slit.dat
+  statistics: X0=9.73073e-05; dX=1.15609; Y0=-6.85469e-05; dY=1.15617;
+  signal: Min=0; Max=411230; Mean=21207;
+  values: 3.39312e+09 384256 1e+08
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -7.5 7.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_2d(400, 20)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: divergence_trompete_exit_slit
+  position: 0 0 8.63862
+  title: Divergence monitor
+  Ncount: 200000000
+  filename: divergence_trompete_exit_slit.dat
+  statistics: X0=-8.42532e-06; dX=0.2136; Y0=1.29541e-05; dY=0.301556;
+  signal: Min=0; Max=9.92943e+06; Mean=424140;
+  values: 3.39312e+09 384256 1e+08
+  xvar: X 
+  yvar: Y 
+  xlabel: X divergence [deg]
+  ylabel: Y divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -2 2 -2 2
+  variables: I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_2d(200, 200)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: divLambdaX_trompete_exit_slit
+  position: 0 0 8.63862
+  title: Wavelength-divergence monitor
+  Ncount: 200000000
+  filename: divLambdaX_trompete_exit_slit.dat
+  statistics: X0=5.06819; dX=1.51328; Y0=4.10567e-06; dY=0.213754;
+  signal: Min=0; Max=1.76668e+06; Mean=64514;
+  values: 2.58056e+09 339439 7.50204e+07
+  xvar: Wa
+  yvar: di
+  xlabel: Wavelength [AA]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 3 13 -3 3
+  variables: I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_2d(200, 200)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: divLambdaY_trompete_exit_slit
+  position: 0 0 8.63862
+  title: Wavelength-divergence monitor
+  Ncount: 200000000
+  filename: divLambdaY_trompete_exit_slit.dat
+  statistics: X0=5.06819; dX=1.51328; Y0=1.12864e-05; dY=0.297669;
+  signal: Min=0; Max=1.22569e+06; Mean=64514;
+  values: 2.58056e+09 339439 7.50204e+07
+  xvar: Wa
+  yvar: di
+  xlabel: Wavelength [AA]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 3 13 -3 3
+  variables: I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_1d(200)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: divX_trompete_exit_slit
+  position: 0 0 8.63862
+  title: Horizontal divergence monitor
+  Ncount: 200000000
+  filename: divX_trompete_exit_slit.dat
+  statistics: X0=-9.02494e-06; dX=0.213759;
+  signal: Min=0; Max=1.47539e+08; Mean=1.69656e+07;
+  values: 3.39312e+09 384256 1e+08
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: horizontal divergence [deg]
+  ylabel: Intensity
+  xlimits: -3 3
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_1d(200)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: divY_trompete_exit_slit
+  position: 0 0 8.63862
+  title: Horizontal divergence monitor
+  Ncount: 200000000
+  filename: divY_trompete_exit_slit.dat
+  statistics: X0=-9.02494e-06; dX=0.213759;
+  signal: Min=0; Max=1.47539e+08; Mean=1.69656e+07;
+  values: 3.39312e+09 384256 1e+08
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: horizontal divergence [deg]
+  ylabel: Intensity
+  xlimits: -3 3
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Wed Jan  4 16:08:05 2023 (1672844885)
+  type: array_1d(200)
+  Source: BOA_RNR51 (BOA_beamline_monitors_Synthetic.instr)
+  component: spectra_bunker
+  position: 0 0 10.2396
+  title: Wavelength monitor
+  Ncount: 200000000
+  filename: spectra_bunker.dat
+  statistics: X0=4.39931; dX=1.79549;
+  signal: Min=0; Max=4.01335e+07; Mean=1.69656e+07;
+  values: 3.39312e+09 384256 1e+08
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 0 10
+  variables: L I I_err N
+end data

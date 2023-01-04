@@ -1,0 +1,27 @@
+begin instrument:
+  Creator: mcstas 3.2
+  Source: BOA_beamline_monitors_Synthetic.instr
+  Parameters:  BASEdir
+  Trace_enabled: no
+  Default_main: yes
+  Embedded_runtime: yes
+end instrument
+
+begin simulation
+Date: Wed Jan 04 16 08 2023
+Ncount: 100000000
+Numpoints: 2
+Param: BASEdir = BOA_1-9AA_1e8/0/, BASEdir = BOA_1-9AA_1e8/1/
+end simulation
+
+begin data
+type: multiarray_1d(2)
+title: Scan of BASEdir
+xvars: BASEdir
+yvars: (Brill_I,Brill_ERR) (Brill_I,Brill_ERR) (Brill_I,Brill_ERR) (PSD_exit_slit_I,PSD_exit_slit_ERR) (divergence_trompete_exit_slit_I,divergence_trompete_exit_slit_ERR) (divLambdaX_trompete_exit_slit_I,divLambdaX_trompete_exit_slit_ERR) (divLambdaY_trompete_exit_slit_I,divLambdaY_trompete_exit_slit_ERR) (divX_trompete_exit_slit_I,divX_trompete_exit_slit_ERR) (divY_trompete_exit_slit_I,divY_trompete_exit_slit_ERR) (spectra_bunker_I,spectra_bunker_ERR)
+xlabel: 'BASEdir'
+ylabel: 'Intensity'
+xlimits: BOA_1-9AA_1e8/0/ BOA_1-9AA_1e8/1/
+filename: mccode.dat
+variables: BASEdir Brill_I Brill_ERR Brill_I Brill_ERR Brill_I Brill_ERR PSD_exit_slit_I PSD_exit_slit_ERR divergence_trompete_exit_slit_I divergence_trompete_exit_slit_ERR divLambdaX_trompete_exit_slit_I divLambdaX_trompete_exit_slit_ERR divLambdaY_trompete_exit_slit_I divLambdaY_trompete_exit_slit_ERR divX_trompete_exit_slit_I divX_trompete_exit_slit_ERR divY_trompete_exit_slit_I divY_trompete_exit_slit_ERR spectra_bunker_I spectra_bunker_ERR
+end data

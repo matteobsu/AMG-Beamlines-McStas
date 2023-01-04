@@ -1,0 +1,201 @@
+/*  DOUBLE SELENE AT BOA  
+
+The BOA instrument is completely described to our best knowledge at 27th January 2012.
+
+The only free beamline parameter are the mean-wavelength of the source and the wavelength bandwidth. The rest of
+beamline until the exit of the linear focusing guide is fixed. 
+The only possibility to influence the beam properties is the so called shutter slit. In real  this is a Li mask in front 
+of the linear focusing guide, which can be moved in and out. If it is inside the beam path it mask the  entrance of the
+linear focusing guide in such a way, that the focusing properties are more or less neglected. This can be necessary for 
+experiments which required lower divergences of the beam.
+
+*/
+
+
+
+
+DEFINE INSTRUMENT BOA_RNR51(string BASEdir=".", Lmin=1, Lmax=9, trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04) 
+    
+DECLARE 
+%{ 
+  char spectrumfilename[128];
+%} 
+ 
+INITIALIZE 
+%{ 
+  sprintf(spectrumfilename,"%s/Mean_Brilliance.dat",BASEdir);
+  
+  printf("Source_gen input: %s\n",spectrumfilename);
+  
+%} 
+ 
+TRACE 
+ 
+ 
+COMPONENT toolbar = Progress_bar( 
+    percent = 10.0) 
+  AT (0, 0, 0) RELATIVE ABSOLUTE
+  
+COMPONENT a1 = Arm() 
+  AT (0,0,0) ABSOLUTE 
+
+COMPONENT Synthetic_source = Source_gen(
+  flux_file = spectrumfilename,
+  flux_file_perAA = 1,
+  Lmin = Lmin,
+  Lmax = Lmax,
+  xwidth=0.104,
+  yheight=0.15,
+  focus_xw=trompete_exit_slit_width,
+  focus_yh=trompete_exit_slit_height,
+  dist=8.62862) 
+ AT (0, 0, 0) RELATIVE a1
+  
+COMPONENT a2a = Arm() 
+  AT (0.0,0.0, 2.1016) RELATIVE a1 
+ 
+COMPONENT a2 = Arm() 
+  AT (0,0, 3.0512) RELATIVE a2a 
+  ROTATED (0,0,0) RELATIVE a2a
+
+COMPONENT Bender_2to4_pos = Arm()  
+  AT (0, 0, 0.4) RELATIVE a2 
+  ROTATED ( 0, 0, 0)RELATIVE a2
+
+
+COMPONENT trompete_3_pos = Arm()
+  AT (0, 0, 1.2+0.21532+1.001) RELATIVE Bender_2to4_pos
+
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+
+/* after the focusing guide, we have the possibilty of setting a first slit (not motorized)
+   available heights are : 120, 40 , 20 
+   available widths are : 40, 20 , 5, 3, 1
+*/
+
+COMPONENT trompete_exit_slit = Slit(
+    xwidth= trompete_exit_slit_width , yheight=trompete_exit_slit_height)
+  AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3_pos
+
+COMPONENT b1= Arm()
+  AT (0, 0, 0.00001) RELATIVE trompete_exit_slit
+
+COMPONENT Brill = Brilliance_monitor(
+    nlam = 1001, nt = 1001, filename = "Brilliance", source_dist= 0.00001 + 0.499+0.1605 + 1.2+0.21532+1.001 + 0.4 + 3.0512 + 2.1016, t_0 = 0,
+    t_1 =1e6, lambda_0 = Lmin, lambda_1 = Lmax,
+    Freq =14, toflambda=1 ,tofcuts=0, xwidth=trompete_exit_slit_width, yheight=trompete_exit_slit_height, srcarea=(0.104*0.15*100*100), restore_neutron=1)
+  AT (0, 0, 0) RELATIVE b1
+  
+COMPONENT PSD_exit_slit = PSD_monitor( 
+    nx = 400, ny = 400, filename = "PSD_exit_slit.dat", xmin = -0.1, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075, restore_neutron=1) 
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit 
+
+COMPONENT divergence_trompete_exit_slit = Divergence_monitor( 
+    nh = 400, nh = 400, filename = "divergence_trompete_exit_slit.dat", xmin = -0.1, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 2, 
+    maxdiv_v = 2, restore_neutron=1) 
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+ 
+COMPONENT divLambdaX_trompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaX_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13, restore_neutron=1)
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+
+COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
+    nL = 200, nh = 200, filename = "divLambdaY_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13, restore_neutron=1)
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit 
+  ROTATED (0,0,90) RELATIVE a2
+
+COMPONENT divX_trompete_exit_slit = Div1D_monitor(
+    ndiv = 200, filename = "divX_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv = 3, restore_neutron=1)
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+
+COMPONENT divY_trompete_exit_slit = Div1D_monitor(
+    ndiv = 200, filename = "divY_trompete_exit_slit",
+    xwidth = 0.1,yheight = 0.17, maxdiv = 3, restore_neutron=1)
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit 
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+COMPONENT spectra_bunker = L_monitor( 
+    nL = 200, filename = "spectra_bunker.dat", xwidth=0.1, 
+    yheight = 0.17, Lmin = 0, Lmax = 10.0) 
+  AT (0, 0, 1.611) RELATIVE b1
+
+END 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

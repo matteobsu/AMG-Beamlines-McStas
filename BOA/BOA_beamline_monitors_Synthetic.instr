@@ -19,17 +19,13 @@ DEFINE INSTRUMENT BOA_RNR51(string BASEdir=".", Lmin=1, Lmax=9, trompete_exit_sl
 DECLARE 
 %{ 
   char spectrumfilename[128];
-  char divxfilename[128];
-  char divyfilename[128];
 %} 
  
 INITIALIZE 
 %{ 
   sprintf(spectrumfilename,"%s/Mean_Brilliance.dat",BASEdir);
-  sprintf(divxfilename,"%s/divX_trompete_exit_slit.dat",BASEdir);
-  sprintf(divyfilename,"%s/divY_trompete_exit_slit.dat",BASEdir);
   
-  printf("Source_gen input: %s, %s, %s\n",spectrumfilename,divxfilename,divyfilename);
+  printf("Source_gen input: %s\n",spectrumfilename);
   
 %} 
  

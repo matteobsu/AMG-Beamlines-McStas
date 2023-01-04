@@ -356,7 +356,7 @@ COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-COMPONENT spectra_exit_bender = L_monitor( 
+COMPONENT spectra_bunker = L_monitor( 
     nL = 200, filename = "spectra_bunker.dat", xwidth=0.1, 
     yheight = 0.17, Lmin = 0, Lmax = 10.0) 
   AT (0, 0, 1.611) RELATIVE b1

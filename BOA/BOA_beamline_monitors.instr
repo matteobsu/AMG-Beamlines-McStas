@@ -14,18 +14,31 @@ experiments which required lower divergences of the beam.
 
 
 
-DEFINE INSTRUMENT BOA_RNR51(flagin=0.0 , trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04) 
+DEFINE INSTRUMENT BOA_RNR51(flagin=0.0 , trompete_exit_slit_width = 0.04,trompete_exit_slit_height=0.04, Lmin=1, Lmax=9, threshold=1e-12) 
     
 DECLARE 
 %{ 
-
-
-
+  double source_dist;
+  double source_focus_xw;
+  double source_focus_yh;
+  char mcplfilename[128];
 %} 
  
 INITIALIZE 
 %{ 
-
+  /* Logic to control source focusing, depending on input 'flagin' */
+  if (!flagin) {
+    /* Focus to "internal guide" */
+    source_dist = 2.1016;
+    source_focus_xw = 0.08;
+    source_focus_yh = 0.15;
+  } else {
+    /* Focus to "internal guide", but narrow down slightly in the vertical direction */
+    source_dist = 2.1016;
+    source_focus_xw = 0.08;
+    source_focus_yh = 0.145;
+  }
+  sprintf(mcplfilename,"BOA_trompete_exit");
 
 %} 
  
@@ -43,9 +56,9 @@ COMPONENT a1 = Arm()
 /* Source discription for the BOA beamline, SINQ sector 10 surface of the cold source */
 
 COMPONENT csource = Source_gen4( 
-   w = 0.104, h=0.15, xw = 0.08, yh = 0.15,  
-   dist = 2.1016,//Lambda0 = lambda_source, dLambda = dlambda_source, 
-    Lmin = 1, Lmax = 9,
+    w = 0.104, h=0.15, xw = source_focus_xw, yh = source_focus_yh,  
+    dist = source_dist,
+    Lmin = Lmin, Lmax = Lmax,
     T1=103.972, I1=(4.035e12/4/PI),  
     T2=25.56,I2=(2.503e12/4/PI), 
     T3=298.411,I3=(1.399e13/4/PI),  
@@ -326,33 +339,42 @@ COMPONENT divLambdaY_beforetrompete_exit_slit = DivLambda_monitor(
 COMPONENT trompete_exit_slit = Slit(
     xwidth= trompete_exit_slit_width , yheight=trompete_exit_slit_height)
   AT (0.0, 0.0 , 0.499+0.1605) RELATIVE trompete_3
+EXTEND %{
+  if (p<INSTRUMENT_GETPAR(threshold)) ABSORB;
+%}
 
 
+COMPONENT MCPL_out = MCPL_output(filename=mcplfilename)
+  AT (0, 0, 0) ABSOLUTE
 
 COMPONENT b1= Arm()
   AT (0, 0, 0.00001) RELATIVE trompete_exit_slit
 
 
-
+COMPONENT PSD_exit_slit = PSD_monitor( 
+    nx = 400, ny = 400, filename = "PSD_exit_slit.dat", xmin = -0.1, 
+    xmax = 0.1, ymin = -0.075, ymax = 0.075) 
+  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+ 
 
 COMPONENT divergence_trompete_exit_slit = Divergence_monitor( 
     nh = 400, nh = 400, filename = "divergence_trompete_exit_slit.dat", xmin = -0.1, 
     xmax = 0.1, ymin = -0.075, ymax = 0.075, maxdiv_h = 2, 
     maxdiv_v = 2) 
-  AT (0, 0, 0.01) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.011) RELATIVE trompete_exit_slit
  
 
 
 COMPONENT divLambdaX_trompete_exit_slit = DivLambda_monitor(
     nL = 200, nh = 200, filename = "divLambdaX_trompete_exit_slit",
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
-  AT (0, 0, 0.011) RELATIVE trompete_exit_slit
+  AT (0, 0, 0.012) RELATIVE trompete_exit_slit
 
 COMPONENT divLambdaY_trompete_exit_slit = DivLambda_monitor(
     nL = 200, nh = 200, filename = "divLambdaY_trompete_exit_slit",
     xwidth = 0.1,yheight = 0.17, maxdiv_h = 3, Lmin = 3, Lmax = 13)
-  AT (0, 0, 0.012) RELATIVE trompete_exit_slit 
-  ROTATED (0,0,90)RELATIVE a2
+  AT (0, 0, 0.013) RELATIVE trompete_exit_slit 
+  ROTATED (0,0,90) RELATIVE a2
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 

@@ -44,7 +44,7 @@ COMPONENT a1 = Arm()
 
 COMPONENT csource = Source_gen4( 
    w = 0.104, h=0.15, xw = 0.08, yh = 0.15,  
-   dist = 2.1016,//Lambda0 = lambda_source, dLambda = dlambda_source, 
+   dist = 2.1016+2.715,//Lambda0 = lambda_source, dLambda = dlambda_source, 
     Lmin = 1, Lmax = 9,
     T1=103.972, I1=(4.035e12/4/PI),  
     T2=25.56,I2=(2.503e12/4/PI), 

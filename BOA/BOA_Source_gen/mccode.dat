@@ -1,0 +1,16 @@
+# Instrument-source: 'BOA_beamline_monitors_Synthetic.instr'
+# Date: Wed Jan 04 16 08 2023
+# Ncount: 100000000
+# Numpoints: 2
+# Param: BASEdir = BOA_1-9AA_1e8/0/
+# type: multiarray_1d(2)
+# title: Scan of BASEdir
+# xlabel: 'BASEdir'
+# ylabel: 'Intensity'
+# xvars: BASEdir
+# yvars: (Brill_I,Brill_ERR) (Brill_I,Brill_ERR) (Brill_I,Brill_ERR) (PSD_exit_slit_I,PSD_exit_slit_ERR) (divergence_trompete_exit_slit_I,divergence_trompete_exit_slit_ERR) (divLambdaX_trompete_exit_slit_I,divLambdaX_trompete_exit_slit_ERR) (divLambdaY_trompete_exit_slit_I,divLambdaY_trompete_exit_slit_ERR) (divX_trompete_exit_slit_I,divX_trompete_exit_slit_ERR) (divY_trompete_exit_slit_I,divY_trompete_exit_slit_ERR) (spectra_bunker_I,spectra_bunker_ERR)
+# xlimits: BOA_1-9AA_1e8/0/ BOA_1-9AA_1e8/1/
+# filename: mccode.dat
+# variables: BASEdir Brill_I Brill_ERR Brill_I Brill_ERR Brill_I Brill_ERR PSD_exit_slit_I PSD_exit_slit_ERR divergence_trompete_exit_slit_I divergence_trompete_exit_slit_ERR divLambdaX_trompete_exit_slit_I divLambdaX_trompete_exit_slit_ERR divLambdaY_trompete_exit_slit_I divLambdaY_trompete_exit_slit_ERR divX_trompete_exit_slit_I divX_trompete_exit_slit_ERR divY_trompete_exit_slit_I divY_trompete_exit_slit_ERR spectra_bunker_I spectra_bunker_ERR
+BOA_1-9AA_1e8/0/ 1.26516E+14 1.43275E+10 9.00731E+15 9.91558E+7 9.04592E+15 9.95436E+7 3.39312E+9 384256 3.39312E+9 384256 2.58056E+9 339439 2.58056E+9 339439 3.39312E+9 384256 3.39312E+9 384256 3.39312E+9 384256
+BOA_1-9AA_1e8/1/ 6.20144E+13 6.98575E+9 4.41478E+15 8.28478E+7 4.43403E+15 8.30782E+7 1.6632E+9 187355 1.6632E+9 187355 1.24651E+9 163856 1.24651E+9 163856 1.6632E+9 187355 1.6632E+9 187355 1.6632E+9 187355

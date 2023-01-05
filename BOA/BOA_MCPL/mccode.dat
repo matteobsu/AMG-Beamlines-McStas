@@ -1,0 +1,16 @@
+# Instrument-source: 'BOA_beamline_monitors_MCPL_in.instr'
+# Date: Wed Jan 04 16 04 2023
+# Ncount: 1000000
+# Numpoints: 2
+# Param: MCPLdir = BOA_1-9AA_1e8/0/
+# type: multiarray_1d(2)
+# title: Scan of MCPLdir
+# xlabel: 'MCPLdir'
+# ylabel: 'Intensity'
+# xvars: MCPLdir
+# yvars: (PSD_exit_slit_I,PSD_exit_slit_ERR) (divergence_trompete_exit_slit_I,divergence_trompete_exit_slit_ERR) (divLambdaX_trompete_exit_slit_I,divLambdaX_trompete_exit_slit_ERR) (divLambdaY_trompete_exit_slit_I,divLambdaY_trompete_exit_slit_ERR) (divX_trompete_exit_slit_I,divX_trompete_exit_slit_ERR) (divY_trompete_exit_slit_I,divY_trompete_exit_slit_ERR) (spectra_bunker_I,spectra_bunker_ERR)
+# xlimits: BOA_1-9AA_1e8/0/ BOA_1-9AA_1e8/1/
+# filename: mccode.dat
+# variables: MCPLdir PSD_exit_slit_I PSD_exit_slit_ERR divergence_trompete_exit_slit_I divergence_trompete_exit_slit_ERR divLambdaX_trompete_exit_slit_I divLambdaX_trompete_exit_slit_ERR divLambdaY_trompete_exit_slit_I divLambdaY_trompete_exit_slit_ERR divX_trompete_exit_slit_I divX_trompete_exit_slit_ERR divY_trompete_exit_slit_I divY_trompete_exit_slit_ERR spectra_bunker_I spectra_bunker_ERR
+BOA_1-9AA_1e8/0/ 3.39738E+9 912583 3.39731E+9 912583 2.58382E+9 569578 2.58382E+9 569578 3.39738E+9 912583 3.39738E+9 912583 3.38608E+9 912528
+BOA_1-9AA_1e8/1/ 1.66526E+9 646963 1.66526E+9 646963 1.24788E+9 390487 1.24788E+9 390487 1.66526E+9 646963 1.66526E+9 646963 1.66181E+9 646950

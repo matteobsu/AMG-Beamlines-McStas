@@ -3,8 +3,8 @@ fid = fopen(fname);
 data=textscan(fid,'%f','CommentStyle','#');
 fclose('all');
 data=cell2mat(data);
-if(nargin<2)
     N2 = length(data)/3;
+if(nargin<2)
     Nx = sqrt(N2);
     Ny = sqrt(N2);
 end
